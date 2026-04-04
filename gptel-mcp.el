@@ -3,7 +3,7 @@
 ;; Copyright (C) 2025  lizqwer scott
 
 ;; Author: lizqwer scott <lizqwerscott@gmail.com>
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Package-Requires: ((emacs "30.1") (mcp "0.1.0") (gptel "0.9.8") (transient "0.7.4"))
 ;; Keywords: ai, mcp
 ;; URL: https://github.com/lizqwerscott/gptel-mcp.el
