@@ -42,7 +42,7 @@ Returns a list in the form (CATEGORY NAME)."
 (defun gptel-mcp-register-tool ()
   "Register all available MCP tools with gptel."
   (interactive)
-  (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+  (let ((tools (mcp-hub-get-all-tool t t)))
     (mapcar #'(lambda (tool)
                 (apply #'gptel-make-tool
                        tool))
@@ -51,7 +51,7 @@ Returns a list in the form (CATEGORY NAME)."
 (defun gptel-mcp-activate-all-tool ()
   "Activate all MCP tools in current gptel session."
   (interactive)
-  (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+  (let ((tools (mcp-hub-get-all-tool t t)))
     (dolist (tool tools)
       (push (gptel-get-tool (gptel-mcp--get-tool-path tool))
             gptel-tools))))
@@ -59,7 +59,7 @@ Returns a list in the form (CATEGORY NAME)."
 (defun gptel-mcp-deactivate-all-tool ()
   "Deactivate all MCP tools in current gptel session."
   (interactive)
-  (let* ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t))
+  (let* ((tools (mcp-hub-get-all-tool t t))
          (tool-paths (mapcar #'gptel-mcp--get-tool-path tools)))
     (setq gptel-tools
           (cl-remove-if #'(lambda (tool)
