@@ -72,10 +72,11 @@ Returns a list in the form (CATEGORY NAME)."
 (defun gptel-mcp-start-all-server-and-register ()
   "Start all MCP servers and register their tools."
   (interactive)
-  (mcp-hub-start-all-server
-   #'(lambda ()
-       (message "started all servers")
-       (gptel-mcp-register-tool))))
+  (mcp-hub-start-all-server)
+  (run-with-timer 2 nil
+                  #'(lambda ()
+                      (message "started all servers")
+                      (gptel-mcp-register-tool))))
 
 ;;;###autoload (autoload 'gptel-mcp-dispatch "gptel-mcp" nil t)
 (transient-define-prefix gptel-mcp-dispatch ()
