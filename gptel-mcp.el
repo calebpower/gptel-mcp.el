@@ -72,21 +72,20 @@ Returns a list in the form (CATEGORY NAME)."
 (defun gptel-mcp-start-all-server-and-register ()
   "Start all MCP servers and register their tools."
   (interactive)
-  (mcp-hub-start-all-server
-   #'(lambda ()
-       (message "start all server finish!")
-       (gptel-mcp-register-tool))))
+  (mcp-hub-start-all-server)
+  (message "started all servers")
+  (gptel-mcp-register-tool))
 
 ;;;###autoload (autoload 'gptel-mcp-dispatch "gptel-mcp" nil t)
 (transient-define-prefix gptel-mcp-dispatch ()
   "Dispatch menu for gptel-mcp operations.
 Provides quick access to server management and tool activation commands."
-  [["Mcp server"
-    ("s" "Start all server" gptel-mcp-start-all-server-and-register)]
+  [["MCP Server"
+    ("s" "start all servers" gptel-mcp-start-all-server-and-register)]
    ["Tools"
-    ("A" "Active all" gptel-mcp-activate-all-tool)
-    ("C" "Deactivate all" gptel-mcp-deactivate-all-tool)]]
-  [("q" "Quit" transient-quit-all)])
+    ("A" "active all" gptel-mcp-activate-all-tool)
+    ("C" "deactivate all" gptel-mcp-deactivate-all-tool)]]
+  [("q" "quit" transient-quit-all)])
 
 (provide 'gptel-mcp)
 ;;; gptel-mcp.el ends here
