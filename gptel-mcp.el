@@ -73,7 +73,7 @@ Returns a list in the form (CATEGORY NAME)."
   "Start all MCP servers and register their tools."
   (interactive)
   (mcp-hub-start-all-server)
-  (run-with-timer 2 nil
+  (run-with-timer 10 nil
                   (lambda ()
                     (message "started all servers")
                     (gptel-mcp-register-tool))))
