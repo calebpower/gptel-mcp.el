@@ -74,9 +74,9 @@ Returns a list in the form (CATEGORY NAME)."
   (interactive)
   (mcp-hub-start-all-server)
   (run-with-timer 2 nil
-                  #'(lambda ()
-                      (message "started all servers")
-                      (gptel-mcp-register-tool))))
+                  (lambda ()
+                    (message "started all servers")
+                    (gptel-mcp-register-tool))))
 
 ;;;###autoload (autoload 'gptel-mcp-dispatch "gptel-mcp" nil t)
 (transient-define-prefix gptel-mcp-dispatch ()
