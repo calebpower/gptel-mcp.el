@@ -1,4 +1,4 @@
-(;;; gptel-mcp.el --- gptel mcp package               -*- lexical-binding: t; -*-
+;;; gptel-mcp.el --- gptel mcp package               -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025  lizqwer scott
 
