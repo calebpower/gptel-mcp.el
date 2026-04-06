@@ -106,8 +106,8 @@ Returns a list in the form (CATEGORY NAME)."
 Provides quick access to server management and tool activation commands."
   [["MCP Server"
     ("s" "start all servers" gptel-mcp-start-all-server-and-register)
-    ("r", "restart all servers" gptel-mcp-restart-all-server-and-reregister),
-    ("k", "kill all servers" gptel-mcp-kill-all-server-and-deregister)]
+    ("r" "restart all servers" gptel-mcp-restart-all-server-and-reregister),
+    ("k" "kill all servers" gptel-mcp-kill-all-server-and-deregister)]
    ["Tools"
     ("a" "active all" gptel-mcp-activate-all-tool)
     ("d" "deactivate all" gptel-mcp-deactivate-all-tool)]]
