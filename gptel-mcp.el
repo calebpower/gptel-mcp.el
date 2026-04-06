@@ -48,6 +48,16 @@ Returns a list in the form (CATEGORY NAME)."
                        tool))
             tools)))
 
+(defun gptel-mcp-deregister-tool ()
+  "Deregister all MCP tools from gptel."
+  (interactive)
+  (let* ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t))
+         (tool-paths (mapcar #'gptel-mcp--get-tool-path tools)))
+    (dolist (path tool-paths)
+      (when-let ((tool (gptel-get-tool path)))
+        (setq gptel-tools (delete tool gptel-tools))
+        (message "Deregistered tool: %s" (car (last path)))))))
+
 (defun gptel-mcp-activate-all-tool ()
   "Activate all MCP tools in current gptel session."
   (interactive)
@@ -78,15 +88,29 @@ Returns a list in the form (CATEGORY NAME)."
                     (message "started all servers")
                     (gptel-mcp-register-tool))))
 
+(defun gptel-mcp-kill-all-server-and-deregister ()
+  "Kills all MCP servers and deregistes their tools."
+  (interactive)
+  (gptel-mcp-deregister-tool)
+  (mcp-hub-close-all-server))
+
+(defun gptel-mcp-restart-all-server-and-reregister()
+  "Restarts all MCP servers and reregisters their tools."
+  (interactive)
+  (gptel-mcp-kill-all-server-and-deregister)
+  (gptel-mcp-start-all-server-and-register))
+
 ;;;###autoload (autoload 'gptel-mcp-dispatch "gptel-mcp" nil t)
 (transient-define-prefix gptel-mcp-dispatch ()
   "Dispatch menu for gptel-mcp operations.
 Provides quick access to server management and tool activation commands."
   [["MCP Server"
-    ("s" "start all servers" gptel-mcp-start-all-server-and-register)]
+    ("s" "start all servers" gptel-mcp-start-all-server-and-register)
+    ("r", "restart all servers" gptel-mcp-restart-all-server-and-reregister),
+    ("k", "kill all servers" gptel-mcp-kill-all-server-and-deregister)]
    ["Tools"
-    ("A" "active all" gptel-mcp-activate-all-tool)
-    ("C" "deactivate all" gptel-mcp-deactivate-all-tool)]]
+    ("a" "active all" gptel-mcp-activate-all-tool)
+    ("d" "deactivate all" gptel-mcp-deactivate-all-tool)]]
   [("q" "quit" transient-quit-all)])
 
 (provide 'gptel-mcp)
