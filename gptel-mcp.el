@@ -3,7 +3,7 @@
 ;; Copyright (C) 2025  lizqwer scott
 
 ;; Author: lizqwer scott <lizqwerscott@gmail.com>
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Package-Requires: ((emacs "30.1") (mcp "0.1.0") (gptel "0.9.8") (transient "0.7.4"))
 ;; Keywords: ai, mcp
 ;; URL: https://github.com/lizqwerscott/gptel-mcp.el
@@ -28,7 +28,7 @@
 ;;; Code:
 
 (require 'cl-lib)
-(eval-when-compile (require 'transient))
+(require 'transient)
 
 (require 'mcp-hub)
 (require 'gptel)
@@ -47,6 +47,16 @@ Returns a list in the form (CATEGORY NAME)."
                 (apply #'gptel-make-tool
                        tool))
             tools)))
+
+(defun gptel-mcp-deregister-tool ()
+  "Deregister all MCP tools from gptel."
+  (interactive)
+  (let* ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t))
+         (tool-paths (mapcar #'gptel-mcp--get-tool-path tools)))
+    (dolist (path tool-paths)
+      (when-let ((tool (gptel-get-tool path)))
+        (setq gptel-tools (delete tool gptel-tools))
+        (message "Deregistered tool: %s" (car (last path)))))))
 
 (defun gptel-mcp-activate-all-tool ()
   "Activate all MCP tools in current gptel session."
@@ -72,21 +82,36 @@ Returns a list in the form (CATEGORY NAME)."
 (defun gptel-mcp-start-all-server-and-register ()
   "Start all MCP servers and register their tools."
   (interactive)
-  (mcp-hub-start-all-server
-   #'(lambda ()
-       (message "start all server finish!")
-       (gptel-mcp-register-tool))))
+  (mcp-hub-start-all-server)
+  (run-with-timer 10 nil
+                  (lambda ()
+                    (message "started all servers")
+                    (gptel-mcp-register-tool))))
+
+(defun gptel-mcp-kill-all-server-and-deregister ()
+  "Kills all MCP servers and deregistes their tools."
+  (interactive)
+  (gptel-mcp-deregister-tool)
+  (mcp-hub-close-all-server))
+
+(defun gptel-mcp-restart-all-server-and-reregister()
+  "Restarts all MCP servers and reregisters their tools."
+  (interactive)
+  (gptel-mcp-kill-all-server-and-deregister)
+  (gptel-mcp-start-all-server-and-register))
 
 ;;;###autoload (autoload 'gptel-mcp-dispatch "gptel-mcp" nil t)
 (transient-define-prefix gptel-mcp-dispatch ()
   "Dispatch menu for gptel-mcp operations.
 Provides quick access to server management and tool activation commands."
-  [["Mcp server"
-    ("s" "Start all server" gptel-mcp-start-all-server-and-register)]
+  [["MCP Server"
+    ("s" "start all servers" gptel-mcp-start-all-server-and-register)
+    ("r" "restart all servers" gptel-mcp-restart-all-server-and-reregister)
+    ("k" "kill all servers" gptel-mcp-kill-all-server-and-deregister)]
    ["Tools"
-    ("A" "Active all" gptel-mcp-activate-all-tool)
-    ("C" "Deactivate all" gptel-mcp-deactivate-all-tool)]]
-  [("q" "Quit" transient-quit-all)])
+    ("a" "active all" gptel-mcp-activate-all-tool)
+    ("d" "deactivate all" gptel-mcp-deactivate-all-tool)]]
+  [("q" "quit" transient-quit-all)])
 
 (provide 'gptel-mcp)
 ;;; gptel-mcp.el ends here
