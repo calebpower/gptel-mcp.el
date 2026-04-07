@@ -1,0 +1,76 @@
+# gptel-mcp.el - Interface Integration for `gptel.el` and `mcp.el`
+
+This is a fork of [lizqwerscott/gptel-mcp.el](https://github.com/lizqwerscott/gptel-mcp.el).
+It provides an interface between [harthink/gptel](https://github.com/karthink/gptel)
+and [lizqwerscott/mcp.el](https://github.com/lizqwerscott/mcp.el).
+
+## Installation
+
+There is no true path to installation, young Padawan. But you can try
+to replicate what I've done.
+
+### 
+
+### ~/.emacs config
+
+Slaps this in your `~/.emacs` config. Probably.
+
+```lisp
+(use-package mcp
+  :vc (:url "https://github.com/lizqwerscott/mcp.el"))
+
+(use-package gptel-mcp
+  :vc (:url "https://github.com/calebpower/gptel-mcp.el"
+       :branch "bugfix/void-variable-error")
+  :after gptel
+  :bind (:map gptel-mode-map
+              ("C-c m" . gptel-mcp-dispatch)))
+
+(defun my/gptel-mcp-projectile-sync ()
+  "Set the MCP server directory to the root of the current Projectile project."
+  (interactive)
+  (when (projectile-project-p)
+    (let ((proj-root (projectile-project-root)))
+      (setq mcp-hub-servers
+            `(
+              ("ProjectFiles" . (:command "npx"
+                                 :args ("-y" "@modelcontextprotocol/server-filesystem"
+                                        ,(expand-file-name proj-root))))
+              ("EverythingTools" . (:command "npx"
+                                    :args ("-y" "@modelcontextprotocol/server-everything")))
+              ("Browser" . (:command "npx"
+                                     :args ("-y" "@modelcontextprotocol/server-puppeteer")))
+              ))
+      (message "MCP context set to Projectile root: %s" proj-root))))
+
+(add-hook 'projectile-after-switch-project-hook #'my/gptel-mcp-projectile-sync)
+```
+
+This of course assumes that 
+
+This package provides seamless integration between [[https://github.com/karthink/gptel][gptel]] and [[https://github.com/lizqwerscott/mcp.el][mcp.el]], enabling quick mcp server startup and tool management within gptel.
+
+* Installation
+1. Requires Emacs 30 or later
+2. Add to your ~/.emacs configuration:
+   #+begin_src elisp
+     (add-to-list 'load-path "<path-to-gptel-mcp.el>")
+     (require 'gptel-mcp)
+   #+end_src
+
+* Usage
+Launch the interface menu with =gptel-mcp-dispatch=
+
+Recommended key binding for gptel-mode-map:
+#+begin_src elisp
+  (keymap-set gptel-mode-map "C-c m" #'gptel-mcp-dispatch)
+#+end_src
+
+For use-package configuration:
+#+begin_src elisp
+  (use-package gptel-mcp
+    :ensure t
+    :vc (:url "https://github.com/lizqwerscott/gptel-mcp.el")
+    :bind (:map gptel-mode-map
+                ("C-c m" . gptel-mcp-dispatch)))
+#+end_src
