@@ -1,12 +1,14 @@
 ;;; gptel-mcp.el --- gptel mcp package               -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2025  lizqwer scott
+;; Copyright (c) 2026 Caleb L. Power
+;; Copyright (c) 2025 Lizqwer Scott
 
-;; Author: lizqwer scott <lizqwerscott@gmail.com>
-;; Version: 0.1.1
-;; Package-Requires: ((emacs "30.1") (mcp "0.1.0") (gptel "0.9.8") (transient "0.7.4"))
+;; Author: Caleb L. Power <cpower@axonibyte.com>
+;; Author: Lizqwer Scott <lizqwerscott@gmail.com>
+;; Version: 0.1.2
+;; Package-Requires: ((emacs "30.2") (mcp "0.1.0") (gptel "0.9.8") (transient "0.7.4"))
 ;; Keywords: ai, mcp
-;; URL: https://github.com/lizqwerscott/gptel-mcp.el
+;; URL: https://github.com/calebpower/gptel-mcp.el
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -64,7 +66,8 @@ Returns a list in the form (CATEGORY NAME)."
   (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
     (dolist (tool tools)
       (push (gptel-get-tool (gptel-mcp--get-tool-path tool))
-            gptel-tools))))
+            gptel-tools)))
+  (run-hooks 'gptel-mcp-after-activate-hook))
 
 (defun gptel-mcp-deactivate-all-tool ()
   "Deactivate all MCP tools in current gptel session."
@@ -109,8 +112,8 @@ Provides quick access to server management and tool activation commands."
     ("r" "restart all servers" gptel-mcp-restart-all-server-and-reregister)
     ("k" "kill all servers" gptel-mcp-kill-all-server-and-deregister)]
    ["Tools"
-    ("a" "active all" gptel-mcp-activate-all-tool)
-    ("d" "deactivate all" gptel-mcp-deactivate-all-tool)]]
+    ("a" "activate tools" gptel-mcp-activate-all-tool)
+    ("d" "deactivate tools" gptel-mcp-deactivate-all-tool)]]
   [("q" "quit" transient-quit-all)])
 
 (provide 'gptel-mcp)
