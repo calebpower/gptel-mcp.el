@@ -12,7 +12,7 @@ There is no true path to installation, young Padawan.
 
 ### ~/.emacs config
 
-Slaps this in your `~/.emacs` config. Probably.
+Slap this in your `~/.emacs` config. Probably.
 
 ```lisp
 (use-package mcp
